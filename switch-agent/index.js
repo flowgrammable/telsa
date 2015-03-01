@@ -16,9 +16,8 @@ if (_.isUndefined(program.serverIp) || _.isUndefined(program.serverPort)) {
   process.exit(1);
 }
 
-console.log(program.serverIp);
-console.log(program.serverPort);
-
+console.log(' server ip: %j', program.serverIp);
+console.log(' server port: %j', program.serverPort);
 
 var client = 
     net.connect({
