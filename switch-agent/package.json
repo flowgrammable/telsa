@@ -1,0 +1,11 @@
+{
+  "name": "switch-agent",
+  "version": "1.0.0",
+  "description": "Javascript based openflow switch-agent",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "APL 2.0"
+}
