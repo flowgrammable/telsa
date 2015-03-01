@@ -8,6 +8,7 @@ program
   .version('0.0.1')
   .option('-s, --server-ip <type>', 'Server IP address')
   .option('-p, --server-port <n>', 'Server port', parseInt)
+  .option('-w, --wait <milliseconds>', 'Milliseconds to wait', parseInt)
   .parse(process.argv);
 
 if (_.isUndefined(program.serverIp) || _.isUndefined(program.serverPort)) {
@@ -16,22 +17,31 @@ if (_.isUndefined(program.serverIp) || _.isUndefined(program.serverPort)) {
   process.exit(1);
 }
 
-console.log(' server ip: %j', program.serverIp);
-console.log(' server port: %j', program.serverPort);
+function log(extra) {
+  console.log('-----------client------------');
+  console.log('dst: '+program.serverIp+':'+program.serverPort);
+  console.log('wait: '+program.wait);
+  console.log('-----------------------------');
+  console.log(extra.join('\n'));
+  console.log('=============================');
+}
 
 var client = net.connect({
   port: program.serverPort,
   host: program.serverIp
 }, function() { //'connect' listener
-  console.log('connected to server!');
-  client.write('GET / HTTP/1.1\r\n\r\n');
+  log(['Connected to server']);
+  setTimeout(function() {
+    log(['Sending data']);
+    client.write('GET / HTTP/1.1\r\n\r\n');
+  }, program.wait);
 });
 
 client.on('data', function(data) {
-  console.log(data.toString());
+  log(['recv data', data.toString()]);
   client.end();
 });
 
 client.on('end', function() {
-  console.log('disconnected from server');
+  log(['Disconnected from server']);
 });
