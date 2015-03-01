@@ -20,13 +20,13 @@ console.log(' server ip: %j', program.serverIp);
 console.log(' server port: %j', program.serverPort);
 
 var client = 
-    net.connect({
-      port: program.serverPort,
-      host: program.serverIp
-    }, function() { //'connect' listener
-      console.log('connected to server!');
-      client.write('GET / HTTP/1.1\r\n\r\n');
-    });
+  net.connect({
+    port: program.serverPort,
+    host: program.serverIp
+  }, function() { //'connect' listener
+    console.log('connected to server!');
+    client.write('GET / HTTP/1.1\r\n\r\n');
+  });
 
 client.on('data', function(data) {
   console.log(data.toString());
