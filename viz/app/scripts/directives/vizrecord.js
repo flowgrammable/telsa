@@ -181,6 +181,23 @@ angular.module('vizApp')
         src: '='
       },
       link: function(scope, element) {
+        var larrow = angular.element('<div></div>');
+        larrow.css('width', '0');
+        larrow.css('height', '0');
+        larrow.css('border-top', '5px solid transparent');
+        larrow.css('border-bottom', '5px solid transparent');
+        larrow.css('border-right', '7px solid');
+        larrow.css('float', 'left');
+        element.append(larrow);
+        var head = angular.element('<div>32 bits</div>');
+        head.css('text-align', 'center');
+        head.css('border-width', '1px');
+        head.css('border-style', 'dashed');
+        head.css('border-top', 'none');
+        head.css('border-left', 'none');
+        head.css('border-right', 'none');
+        head.css('margin-bottom', '10px');
+        element.append(head);
         prepare(scope.src.fields, element.parent()[0].offsetWidth);
         _(scope.src.fields).each(function(field) {
           console.log('--------------------');
