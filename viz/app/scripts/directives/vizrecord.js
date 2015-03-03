@@ -182,13 +182,25 @@ angular.module('vizApp')
       },
       link: function(scope, element) {
         var larrow = angular.element('<div></div>');
+        larrow.css('position', 'relative');
+        larrow.css('top', '17px');
         larrow.css('width', '0');
         larrow.css('height', '0');
-        larrow.css('border-top', '5px solid transparent');
-        larrow.css('border-bottom', '5px solid transparent');
+        larrow.css('border-top', '3px solid transparent');
+        larrow.css('border-bottom', '3px solid transparent');
         larrow.css('border-right', '7px solid');
         larrow.css('float', 'left');
         element.append(larrow);
+        var rarrow = angular.element('<div></div>');
+        larrow.css('position', 'relative');
+        larrow.css('top', '17px');
+        rarrow.css('width', '0');
+        rarrow.css('height', '0');
+        rarrow.css('border-top', '3px solid transparent');
+        rarrow.css('border-bottom', '3px solid transparent');
+        rarrow.css('border-left', '7px solid');
+        rarrow.css('float', 'right');
+        element.append(rarrow);
         var head = angular.element('<div>32 bits</div>');
         head.css('text-align', 'center');
         head.css('border-width', '1px');
