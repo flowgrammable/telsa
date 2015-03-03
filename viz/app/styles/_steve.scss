@@ -1,0 +1,30 @@
+
+@import 'colors';
+
+.steve_box {
+  border-width: 1px;
+  color: white;
+  text-align: center;
+  font-style: italic;
+  margin-bottom: -1px;
+  float: left;
+}
+
+.even_box {
+  background-color: $color-redish;
+}
+
+.odd_box {
+  background-color: $color-blueish;
+}
+
+.uint {
+  @extend .steve_box;
+  border-width: 1px;
+}
+
+.composite {
+  @extend .steve_box;
+  border-width: 1px;
+}
+
