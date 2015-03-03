@@ -16,14 +16,27 @@ function mkElement(box) {
   element.css('float', 'left');
   element.css('text-align', 'center');
   element.css('font-style', 'italic');
-  element.css('margin-bottom', '-1px');
   element.css('border-width', '1px');
   element.css('border-style', 'solid');
+  element.css('white-space', 'pre');
+  if(!box.north) {
+    element.css('border-top', 'none');
+  }
+  if(!box.east) {
+    element.css('border-right', 'none');
+  }
+  if(!box.south) {
+    element.css('border-bottom', 'none');
+  }
+  if(!box.west) {
+    element.css('border-left', 'none');
+  }
   return element;
 }
 
 function addBox(result, width, north, east, south, west) {
   result.push({
+    text: ' ',
     width: width / 32 * 100,
     north: north,
     east: east,
@@ -40,7 +53,9 @@ function mkPrefixBoxes(result, prefix, infix, postfix, field) {
     overlap = postfix - field.col;
     if(overlap > 0) {
       addBox(result, overlap, true, false, false, true);
-      addBox(result, prefix-overlap, true, true, true, false);
+      if(prefix-overlap > 0) {
+        addBox(result, prefix-overlap, true, true, true, false);
+      }
     } else {
       addBox(result, prefix, true, true, true, true);
     }
@@ -84,7 +99,9 @@ function mkPostfixBoxes(result, prefix, infix, postfix, field) {
   } else if(prefix > 0) {
     overlap = postfix - field.col;
     if(overlap > 0) {
-      addBox(result, postfix-overlap, true, false, true, true);
+      if(postfix-overlap > 0) {
+        addBox(result, postfix-overlap, true, false, true, true);
+      }
       addBox(result, overlap, false, true, true, false);
     } else {
       addBox(result, postfix, true, true, true, true);
@@ -112,6 +129,7 @@ function mkBoxes(field) {
 
   console.log('-------------------------');
   console.log('Field: %s', field.name);
+  console.log('Pos: %s', field.col);
   console.log('Prefix: %d', prefix);
   console.log('Infix: %d', infix);
   console.log('Postfix: %d', postfix);
@@ -138,6 +156,8 @@ function setName(field, pixelWidth) {
   width = max.width / 100 * pixelWidth;
   if(field.name.length * 10 < width) {
     max.text = field.name;
+  } else if(10 < width) {
+    max.text = field.name.substring(0, Math.floor(width/10));
   }
 }
 
@@ -172,6 +192,9 @@ angular.module('vizApp')
           });
           console.log('--------------------');
         });
+        var tail = angular.element('<div></div>');
+        tail.css('clear', 'both');
+        element.append(tail);
       }
     };
   });
