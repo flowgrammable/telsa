@@ -181,6 +181,7 @@ angular.module('vizApp')
         src: '='
       },
       link: function(scope, element) {
+
         var larrow = angular.element('<div></div>');
         larrow.css('position', 'relative');
         larrow.css('top', '17px');
@@ -191,9 +192,10 @@ angular.module('vizApp')
         larrow.css('border-right', '7px solid');
         larrow.css('float', 'left');
         element.append(larrow);
+
         var rarrow = angular.element('<div></div>');
-        larrow.css('position', 'relative');
-        larrow.css('top', '17px');
+        rarrow.css('position', 'relative');
+        rarrow.css('top', '17px');
         rarrow.css('width', '0');
         rarrow.css('height', '0');
         rarrow.css('border-top', '3px solid transparent');
@@ -201,15 +203,12 @@ angular.module('vizApp')
         rarrow.css('border-left', '7px solid');
         rarrow.css('float', 'right');
         element.append(rarrow);
+
         var head = angular.element('<div>32 bits</div>');
-        head.css('text-align', 'center');
-        head.css('border-width', '1px');
-        head.css('border-style', 'dashed');
-        head.css('border-top', 'none');
-        head.css('border-left', 'none');
-        head.css('border-right', 'none');
+        head.addClass('bitWidth');
         head.css('margin-bottom', '10px');
         element.append(head);
+
         prepare(scope.src.fields, element.parent()[0].offsetWidth);
         _(scope.src.fields).each(function(field) {
           console.log('--------------------');
@@ -221,6 +220,7 @@ angular.module('vizApp')
           });
           console.log('--------------------');
         });
+
         var tail = angular.element('<div></div>');
         tail.css('clear', 'both');
         element.append(tail);
