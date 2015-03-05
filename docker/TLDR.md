@@ -22,7 +22,7 @@ in a read-only file system layered above the previous read-only file
 ### Image versioning and distribution
 
 Docker images are versioned by file system layer. Dockerhub is the github
-for docker images. 
+for docker images. Every docker image layer has metadata associated with it.
 
 ### Docker Container Entry point 
 
