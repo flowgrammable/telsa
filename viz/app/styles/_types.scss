@@ -1,0 +1,64 @@
+
+@mixin horizArrowHead($height: 10px) {
+  width: 0;
+  height: 0;
+  border-top: $height solid transparent;
+  border-bottom: $height solid transparent;
+}
+
+@mixin leftArrowHead($width: 10px) {
+  @include horizArrowHead($width/2);
+  border-right: $width solid transparent;
+}
+
+@mixin rightArrowHead($width: 10px) {
+  @include horizArrowHead($width/2);
+  border-left: $width solid transparent;
+}
+
+@mixin line($width: 1px, $style: solid) {
+  border-width: $width;
+  border-style: $style;
+}
+
+@mixin underLine($width: 1px, $style: solid) {
+  @include line($width, $style);
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+
+@mixin overLine($width: 1px, $style: solid) {
+  @include line($width, $style);
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
+}
+
+@mixin leftLine($width: 1px, $style: solid) {
+  @include line($width, $style);
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+}
+
+@mixin rightLine($width: 1px, $style: solid) {
+  @include line($width, $style);
+  border-top: none;
+  border-left: none;
+  border-bottom: none;
+}
+
+.leftBitWidthArrow {
+  @include leftArrowHead(7px);
+}
+
+.rightBitWidthArrow {
+  @include rightArrowHead(7px);
+}
+
+.bitWidth {
+  @include underLine(1px, dashed);
+  text-align: center;
+}
+
