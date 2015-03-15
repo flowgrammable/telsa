@@ -1,1 +1,22 @@
-<p>This is the tree view.</p>
+
+<div class="row">
+  <div class="col-md-3" style="border-style: solid">
+    <tree-view data-tree="assets.tree" select="select">
+    </tree-view>
+  </div>
+  <div class="col-md-9">
+    {{assets.selected}}
+
+    <ul class="fa-ul">
+      <li><i class="fa-li fa fa-minus-square-o"></i>Protocol<ul class="fa-ul">
+        <li><i class="fa-li fa fa-long-arrow-right"></i>Ethernet</li>
+        <li><i class="fa-li fa fa-circle"></i>ARP</li>
+        <li><i class="fa-li fa fa-code"></i>VLAN</li>
+      </ul></li>
+
+      <li><i class="fa-li fa fa-plus-square-o"></i>Protocol<ul class="fa-ul">
+      </ul></li>
+    </ul>
+  </div>
+</div>
+
