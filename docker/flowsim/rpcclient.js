@@ -1,4 +1,4 @@
-#!/usr/bin/nodejs 
+#!/usr/local/bin/node
 (function() {
 var net = require('net');
 var shortid = require('shortid');
@@ -38,6 +38,7 @@ Client.prototype.respond = function(res, err, id){
 Client.prototype.connect = function(port, ip) {
    var that = this;
    this.sock.connect(port, ip, function(err, res){
+     console.log('connected');
       if(err) { console.log('error:', err); }
    });
 };
