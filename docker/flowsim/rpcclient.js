@@ -20,15 +20,18 @@ var Client = function(options) {
     console.log('error', err);
   });
 
+  // incoming data
   this.sock.on('data', function(data){
     var msg = JSON.parse(data);
     that.resHandler(msg);
   });
 };
 
-Client.prototype.request = function(amethod, aparams){
-  var rid = shortid.generate();
-  this.send({method: amethod, params: aparams, id: rid});
+Client.prototype.request = function(amethod, aparams, id){
+  if(!id){
+    var id = shortid.generate();
+  }
+  this.send({method: amethod, params: aparams, id: id});
 };
 
 Client.prototype.respond = function(res, err, id){
@@ -40,7 +43,10 @@ Client.prototype.connect = function(port, ip, cb) {
    this.sock.connect(port, ip, function(err, res){
      console.log('connected');
       if(err) { console.log('error:', err); }
-      else { cb(null) }
+      else { 
+        that.connected = true;
+        cb(null) 
+      }
    });
 };
 

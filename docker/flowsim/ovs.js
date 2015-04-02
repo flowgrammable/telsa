@@ -8,20 +8,28 @@ socket.on('connect', function(){
   console.log('Connected to socket.io server');
 });
 
-socket.on('switchinfo', function(d){
-  var ovsdb1 = new ovsdb.Ovsdb({port:d.port, ip: d.ip}, socket);
+socket.on('ovsdb:connect', function(d){
+  // create ovsdb instance and attempt to connect to it
+  var ovsdb1 = new ovsdb.Ovsdb({port:d.port, ip: d.ip, id: d.id}, socket);
+  // track it
   ovsdbs[ovsdb1.id] = ovsdb1;
   ovsdb1.connect(function(err){
     if(!err){
       console.log('OVSDB connected to service...');
-      socket.emit('switch:connected', ovsdb1.id)
+      // publish successful connection
+      socket.emit('ovsdb:connected', ovsdb1.id)
     }
   });
 });
 
 socket.on('ovsdb:request', function(d){
-  console.log('requesting...', d.method);
-  ovsdbs[d.id][d.method](d.params);
+  console.log('Request: ', d.method, d.params);
+  // d.ovsdbId - ovsdb instance id
+  ovsdbs[d.ovsdbId][d.method](d.params);
+});
+
+socket.on('ovsdb:response', function(d){
+  console.log('response...', d);
 });
 
 })();

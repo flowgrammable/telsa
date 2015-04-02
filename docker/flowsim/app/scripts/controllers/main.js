@@ -39,10 +39,6 @@ angular.module('flowsimApp')
       $scope.ovs.ip = '';
     });
 
-    socket.on('event', function(data){
-      console.log('data:', data);
-    });
-
     $scope.getSchema = function(){
       $scope.ovsdbRequest('get_schema', 'Open_vSwitch');
     };    
@@ -56,12 +52,13 @@ angular.module('flowsimApp')
       if(!params){
         var params = [];
       };
-      socket.emit('ovsdb:request', {id: id,
+      socket.emit('ovsdb:request', { id: id,
+       ovsdbId: id,
        params: params,  method: meth});
     };
 
     $scope.addSwitch = function(){
-      socket.emit('switch:add', {
+      socket.emit('ovsdb:import', {
         name: $scope.ovs.name,
         port: $scope.ovs.port,
         ip: $scope.ovs.ip
