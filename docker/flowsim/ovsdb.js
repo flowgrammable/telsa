@@ -3,11 +3,12 @@
 var shortid = require('shortid');
 var rpc = require('./rpcclient.js');
 
-var Ovsdb = function(config){
+var Ovsdb = function(config, socket){
   var that = this;
   this.port = config.port;
   this.ip = config.ip;
   this.id = shortid.generate();
+  this.socket = socket;
 
   this.requestHandler = function(req){
     switch(req.method){
@@ -20,13 +21,10 @@ var Ovsdb = function(config){
   };
   this.resHandler = function(res){
     console.log('res: ', res);
-    switch(res.method){
-      case "echo":
-        that.echo(); 
-        break;
-      default:
-        break;
+    if(res.method && res.method === 'echo'){
+      that.echo();
     }
+    that.socket.emit('ovsdb:response', {id:that.id, res: res});
   };
   this.rpc = new rpc.Client({
     requestHandler: this.requestHandler,
@@ -48,13 +46,16 @@ Ovsdb.prototype.listDB = function(){
   this.rpc.request("list_dbs", []);
 };
 
-Ovsdb.prototype.getSchema = function(dbName){
-  console.log('dbname:', dbName);
+Ovsdb.prototype.get_schema = function(dbName){
   this.rpc.request('get_schema', [dbName]);
 };
 
-Ovsdb.prototype.connect = function(){
-  this.rpc.connect(this.port, this.ip);
+Ovsdb.prototype.connect = function(cb){
+  this.rpc.connect(this.port, this.ip, function(err){
+    if(!err){
+      cb(null);
+    }
+  });
 };
 
 module.exports.Ovsdb = Ovsdb;

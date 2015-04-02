@@ -35,11 +35,12 @@ Client.prototype.respond = function(res, err, id){
   this.send({result: res, error: err, id: id});
 };
 
-Client.prototype.connect = function(port, ip) {
+Client.prototype.connect = function(port, ip, cb) {
    var that = this;
    this.sock.connect(port, ip, function(err, res){
      console.log('connected');
       if(err) { console.log('error:', err); }
+      else { cb(null) }
    });
 };
 
