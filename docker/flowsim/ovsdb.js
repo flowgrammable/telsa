@@ -1,38 +1,52 @@
 #!/usr/bin/nodejs
 (function(){
 
-var requestHandler = function(req, cb){
-  switch(req.method){
-    case "echo":
-      cb({result: [], error: null, id: req.id});
-      break;
-    default:
-      cb();
-      break;
-  }
-};
-
 var rpc = require('./rpcclient.js');
-var ovsdb = {requestHandler: requestHandler,
-             responseHandler: responseHandler
-};
 
 var Ovsdb = function(config){
+  var that = this;
   this.port = config.port;
   this.ip = config.ip;
-  this.cli = new rpc.Client(ovsdb);
-  var that = this;
+  this.requestHandler = function(req){
+    switch(req.method){
+      case "echo":
+        this.echo(); 
+        break;
+      default:
+        break;
+    }
+  };
+  this.resHandler = function(res){
+    switch(res.method){
+      case "echo":
+        that.echo(); 
+        break;
+      default:
+        cb();
+        break;
+    }
+  };
+  this.rpc = new rpc.Client({
+    requestHandler: this.requestHandler,
+    resHandler: this.resHandler
+  });
 };
 
+Ovsdb.prototype.echo = function(){
+  this.rpc.respond([] , null, 'echo'); 
+};
 
 Ovsdb.prototype.listDB = function(){
-  this.cli.send({method: "list_dbs", params: [], id: 0});
+  return this.rpc.call("list_dbs", []);
+};
+
+Ovsdb.prototype.getSchema = function(dbName){
+  console.log('dbname:', dbName);
 };
 
 Ovsdb.prototype.connect = function(){
-  this.cli.connect(this.port, this.ip);
+  this.rpc.connect(this.port, this.ip);
 };
-
 
 module.exports.Ovsdb = Ovsdb;
 })();

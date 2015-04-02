@@ -1,16 +1,19 @@
 #!/usr/bin/nodejs 
 (function() {
 var net = require('net');
+var shortid = require('shortid');
 
 var requests = {};
 
 var Client = function(options) {
   this.requestHandler = options.requestHandler; 
+  this.resHandler = options.resHandler;
   this.sock = new net.Socket();
+  this.connected = false;
   var that = this;
 
   this.sock.on('connect', function(){
-    console.log('connected');
+    that.connected = true;
   });
 
   this.sock.on('error', function(err){
@@ -19,16 +22,17 @@ var Client = function(options) {
 
   this.sock.on('data', function(data){
     var msg = JSON.parse(data);
-    if(!msg.method){
-      console.log('response ', msg);
-    } else {
-      that.requestHandler(msg, function(data){
-        if(data){
-          that.send(data);
-        }
-      });
-    }
+    that.resHandler(msg);
   });
+};
+
+Client.prototype.request = function(amethod, aparams){
+  var rid = shortid.generate();
+  this.send({method: amethod, params: aparams, id: rid});
+};
+
+Client.prototype.respond = function(res, err, id){
+  this.send({result: res, error: err, id: id});
 };
 
 Client.prototype.connect = function(port, ip) {
