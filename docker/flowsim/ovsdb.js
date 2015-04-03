@@ -48,6 +48,10 @@ Ovsdb.prototype.listDB = function(id){
   this.rpc.request("list_dbs", [], id);
 };
 
+Ovsdb.prototype.transact = function(params, id){
+  this.rpc.request("transact", params, id);
+};
+
 Ovsdb.prototype.get_schema = function(dbName){
   this.rpc.request('get_schema', [dbName]);
 };

@@ -23,8 +23,11 @@ angular.module('flowsimApp')
    
     socket.on('ovsdb:response', function(d){
      console.log('response from ovsdb...', d);
-     $scope.ovsdbResponse = d.res;
-     $scope.lastupdate = new Date().toString('HH:mm:ss');
+     if(d.res.result !== 'echo'){
+      $scope.ovsdbResponse = d.res;
+     } else {
+      $scope.lastEcho = new Date().toString('HH:mm:ss');
+     }
     });
 
     socket.on('ovsdb:connected', function(d){
@@ -46,6 +49,45 @@ angular.module('flowsimApp')
     $scope.getDB = function(){
       $scope.ovsdbRequest('listDB');
     };
+
+    $scope.addController = function(){
+      var addCtrl = {
+        'op': 'insert',
+        'table': 'Controller',
+        'row': {'target': 'ptcp:6633' },
+        'uuid-name': 'dddd'
+      };
+      var commit = {
+        'op': 'commit',
+        'durable': true 
+      };
+      var updateRow = {'next_cfg': 2};
+     
+      var incSequence = {
+        'op': 'update',
+        'table': 'Open_vSwitch',
+        'where': [['cur_cfg', '==', 1] ],
+        'row': {'next_cfg': 2} 
+      };
+
+      $scope.ovsdbRequest('transact', 
+          ['Open_vSwitch', addCtrl, incSequence, commit ] );
+    };
+
+    $scope.updateDB = function(){
+      var updateRow = {'next_cfg': '2'};
+     
+      var incSequence = {
+        'op': 'update',
+        'table': 'Open_vSwitch',
+        'where': ['next_cfg', '==', '1' ],
+        'row': updateRow
+      };
+
+      $scope.ovsdbRequest('transact',
+          ['Open_vSwitch', incSequence]);
+    };
+
     
     $scope.ovsdbRequest = function(meth, params){
       var id = $scope.ovsdbs[0].id;

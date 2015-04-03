@@ -21,9 +21,32 @@ var Client = function(options) {
   });
 
   // incoming data
+  var open = 0;
+  var close = 0; 
+  var msg = ''; 
+  var jmsg = '';
   this.sock.on('data', function(data){
-    var msg = JSON.parse(data);
-    that.resHandler(msg);
+    for(var i = 0; i < data.length; i++){
+      if(data[i] === 123){
+        open++;
+      } else if(data[i] === 125){
+        close++;
+      }
+      if(open > close || close === 0){
+       console.log(String.fromCharCode(data[i]));
+       msg += String.fromCharCode(data[i]);
+      } else {
+       msg += String.fromCharCode(data[i]);
+       jmsg = JSON.parse(msg);
+       msg = '';
+       open = 0;
+       close = 0;
+      } 
+    }
+    if(jmsg){
+      that.resHandler(jmsg);
+      jmsg = '';
+    }
   });
 };
 
