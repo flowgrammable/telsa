@@ -16,7 +16,8 @@ angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
-    'btford.socket-io'
+    'btford.socket-io',
+    'uuid'
   ])
   .config(function ($routeProvider) {
     $routeProvider

@@ -2,9 +2,11 @@
 # vi: set ft=ruby :
 $script_ovs = <<SCRIPT
 sudo apt-get install openvswitch-common openvswitch-switch -y
+sudo ovs-appctl -t ovsdb-server ovsdb-server/add-remote ptcp:4444
 SCRIPT
 
 $script_flowsim = <<SCRIPT
+sudo apt-get update -y
 sudo apt-get install nodejs npm -y
 SCRIPT
 # All Vagrant configuration is done below. The "2" in Vagrant.configure

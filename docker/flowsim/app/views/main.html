@@ -27,9 +27,10 @@
     </dl>
     <button type="submit" class="btn btn-default" ng-click="getDB()">Get Database Name</button>
     <button type="submit" class="btn btn-default" ng-click="getSchema()">Get Database Schema</button>
+    <button type="submit" class="btn btn-default" ng-click="addController()">Add Controller</button>
   </div>
   <div class="row">
     <h3>Debug</h3>
-    {{lastupdate}}
     <pre>{{ovsdbResponse}}</pre>
+    <p>Last Echo:</p> {{lastEcho}}
 </div>

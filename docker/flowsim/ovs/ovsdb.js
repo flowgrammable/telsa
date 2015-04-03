@@ -1,13 +1,13 @@
 #!/usr/local/bin/node
 (function(){
 var shortid = require('shortid');
-var rpc = require('./rpcclient.js');
+var rpc = require('../rpc/client.js');
 
 var Ovsdb = function(config, socket){
   var that = this;
   this.port = config.port;
   this.ip = config.ip;
-  this.id = shortid.generate();
+  this.id = config.id;
   this.socket = socket;
 
   this.requestHandler = function(req){
@@ -19,13 +19,16 @@ var Ovsdb = function(config, socket){
         break;
     }
   };
+  
+  // incoming data
   this.resHandler = function(res){
-    console.log('res: ', res);
     if(res.method && res.method === 'echo'){
       that.echo();
     }
-    that.socket.emit('ovsdb:response', {id:that.id, res: res});
+    console.log('resid..', res.id);
+    that.socket.emit('ovsdb:response', {ovsdbId:that.id, res: res});
   };
+
   this.rpc = new rpc.Client({
     requestHandler: this.requestHandler,
     resHandler: this.resHandler
@@ -42,12 +45,16 @@ Ovsdb.prototype.echo = function(){
   this.rpc.respond([] , null, 'echo'); 
 };
 
-Ovsdb.prototype.listDB = function(){
-  this.rpc.request("list_dbs", []);
+Ovsdb.prototype.listDB = function(id){
+  this.rpc.request("list_dbs", [], id);
 };
 
-Ovsdb.prototype.get_schema = function(dbName){
-  this.rpc.request('get_schema', [dbName]);
+Ovsdb.prototype.transact = function(id, params){
+  this.rpc.request("transact", params, id);
+};
+
+Ovsdb.prototype.get_schema = function(id, dbName){
+  this.rpc.request('get_schema', [dbName], id);
 };
 
 Ovsdb.prototype.connect = function(cb){
