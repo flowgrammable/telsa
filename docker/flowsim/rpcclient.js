@@ -33,7 +33,6 @@ var Client = function(options) {
         close++;
       }
       if(open > close || close === 0){
-       console.log(String.fromCharCode(data[i]));
        msg += String.fromCharCode(data[i]);
       } else {
        msg += String.fromCharCode(data[i]);
