@@ -15,8 +15,8 @@ socket.on('ovsdb:connect', function(d){
   ovsdbs[ovsdb1.id] = ovsdb1;
   ovsdb1.connect(function(err){
     if(!err){
-      console.log('OVSDB connected to service...');
-      // publish successful connection
+     console.log('OVSDB connected to service...');
+     // publish successful connection
       socket.emit('ovsdb:connected', ovsdb1.id)
     }
   });
@@ -25,7 +25,7 @@ socket.on('ovsdb:connect', function(d){
 socket.on('ovsdb:request', function(d){
   console.log('Request: ', d.method, d.params);
   // d.ovsdbId - ovsdb instance id
-  ovsdbs[d.ovsdbId][d.method](d.params);
+  ovsdbs[d.ovsdbId][d.method](d.id , d.params);
 });
 
 socket.on('ovsdb:response', function(d){

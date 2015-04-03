@@ -3,7 +3,7 @@ var http = require('http').Server(app);
 var socket = require('socket.io-client')('http://localhost:8888');
 var io = require('socket.io')(http);
 var shortid = require('shortid');
-var ovsdb = require('./ovsdb');
+var ovsdb = require('./ovs/ovsdb');
 
 http.listen(8888, function(){
   console.log('listening on *:8888');

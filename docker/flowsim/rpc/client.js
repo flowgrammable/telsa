@@ -13,6 +13,7 @@ var Client = function(options) {
   var that = this;
 
   this.sock.on('connect', function(){
+    console.log('something connected...');
     that.connected = true;
   });
 
