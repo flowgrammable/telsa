@@ -1,6 +1,6 @@
 var _   = require('underscore');
 
-function State() {
+function Buffer() {
   // Collecdtion of well formed chunks
   this.chunks = [];
 
@@ -12,7 +12,7 @@ function State() {
   this.level = 0;
 }
 
-State.prototype.read = function(data) {
+Buffer.prototype.read = function(data) {
   // Append the latest data to the chunk buffer
   this.chunk += data.toString('utf8');
 
@@ -33,15 +33,15 @@ State.prototype.read = function(data) {
     }
     this.pos++;
   }
-  return _(this.chunks).map(function(chunk) {
+
+  // Clean up the chunks
+  var result = _(this.chunks).map(function(chunk) {
     return JSON.parse(chunk);
   });
+  this.chunks = [];
+
+  return result;
 };
 
-State.prototype.print = function() {
-  console.log('level: '+this.level);
-  console.log(this.chunks);
-};
-
-exports.State = State;
+exports.Buffer = Buffer;
 

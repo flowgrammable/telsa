@@ -1,14 +1,16 @@
 #!/usr/bin/env node
 
 var net = require('net');
-var jrpc = require('./jsonrpc');
+var ovsdb = require('./ovsdb/ovsdb');
 
 net.createServer(function(sk) {
   var state = new jrpc.State();
 
   sk.on('data', function(data) {
     try {
-      state.read(data);
+      _(state.read(data)).each(function(req) {
+        console.log(req);
+      });
     } catch (e) {
       console.log(e);
       sk.destroy();
