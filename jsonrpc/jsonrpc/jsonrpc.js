@@ -44,6 +44,7 @@ function send(socket, msg) {
 }
 
 function Peer(socket, reqCB, notCB, tm_wait, destroy) {
+  var that = this;
   // peer socket we're managing
   this.socket = socket;
   // socket buffer for msg formation
@@ -53,13 +54,17 @@ function Peer(socket, reqCB, notCB, tm_wait, destroy) {
   // who to call for notifications
   this.notifyCB  = notCB;
   // allow a user supplied external destruction callback
-  this.destroy = destroy || function() {};
+  this.destroyCB = destroy || function() {};
   // cache of outstanding requests
   this.requests = {};
   // incoming socket data handler
-  this.socket.on('data', this.recv);
+  this.socket.on('data', function(data) {
+    that.recv(data);
+  });
   // closed socket handler
-  socket.on('end', this.dtor);
+  socket.on('end', function() {
+    that.dtor();
+  });
   // set a timer to check on outstanding requests
   this.time_wait = tm_wait || 10000;
 }
@@ -69,10 +74,10 @@ Peer.prototype.dtor = function() {
   this.socket.destroy();
   // Send timeout errors to any waiting clients
   _(this.requests).each(function(value, key) {
-    value('Request timeout');
+    value.callback('Request timeout');
   });
   // Initiate the user supplied callback
-  this.destroy();
+  this.destroyCB();
 };
 
 Peer.prototype.timer = function() {
@@ -89,7 +94,7 @@ Peer.prototype.timer = function() {
 
 Peer.prototype.recv = function(data) {
   try {
-    _(buffer.read(data)).each(function(msg) {
+    _(this.buffer.read(data)).each(function(msg) {
       if(isResponse(msg)) {
         this.rxResponse(msg);
       } else if(isRequest(msg)) {
@@ -99,7 +104,7 @@ Peer.prototype.recv = function(data) {
           this.rxRequest(msg);
         }
       } else {
-        throw ('Bad msg: '+msg);
+        console.log('Bad msg: '+msg);
       }
     });
   } catch(e) {

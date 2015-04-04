@@ -1,12 +1,22 @@
 #!/usr/bin/env node
 
 var net = require('net');
+var  _ = require('underscore');
 var jrpc = require('./jsonrpc');
 
 function Server(sk) {
-  this.peer = new jrpc.Peer(sk, this.requestCB, this.notifyCB, this.destroy);
-
   var that = this;
+  this.peer = new jrpc.Peer(sk, 
+    function(msg) {
+      that.requestCB(msg);
+    }, 
+    function(msg) {
+      that.notifyCB(msg);
+    }, 10000, 
+    function() {
+      that.destroy();
+    });
+
   this.timer = setInterval(function() {
     that.peer.request('echo', [], function(err, result) {
       if(err) {
@@ -17,7 +27,7 @@ function Server(sk) {
     });
   }, 10000);
 
-  that.peer.request('stuff', [], function(err, result) {
+  this.peer.request('stuff', [], function(err, result) {
     if(err) {
       console.log(err);
     } else {
