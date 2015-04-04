@@ -38,7 +38,12 @@ function isResponse(msg) {
          !_(msg.id).isUndefined();
 }
 
-function Peer(socket, reqCB, notCB, destroy) {
+// private serialization of json and send
+function send(socket, msg) {
+  socket.write(JSON.stringify(msg));
+}
+
+function Peer(socket, reqCB, notCB, tm_wait, destroy) {
   // peer socket we're managing
   this.socket = socket;
   // socket buffer for msg formation
@@ -47,47 +52,77 @@ function Peer(socket, reqCB, notCB, destroy) {
   this.requestCB = reqCB;
   // who to call for notifications
   this.notifyCB  = notCB;
-
-  this.destroy = destroy;
-
+  // allow a user supplied external destruction callback
+  this.destroy = destroy || function() {};
+  // cache of outstanding requests
   this.requests = {};
-
-  var that = this;
-  socket.on('data', function(data) {
-    try {
-      _(that.buffer.read(data)).each(function(msg) {
-        if(isRequest(msg)) {
-          if(isNotification(msg)) {
-            that.notifyCB(msg);
-          } else {
-            that.requestCB(msg);
-          }
-        } else if(isResponse(msg)) {
-          if(_(that.requests).has(msg.id)) {
-            that.requests[msg.id].callback(msg.error, msg.result);
-            delete that.requests[msg.id];
-          } else {
-            console.log('unknown response');
-          }
-        } else {
-          throw 'Not req|res|not';
-        }
-      });
-    } catch(e) {
-      // the steam is busted
-      console.log(e);
-      socket.destroy();
-      this.destroy();
-    }
-  });
-
-  socket.on('end', function() {
-  });
+  // incoming socket data handler
+  this.socket.on('data', this.recv);
+  // closed socket handler
+  socket.on('end', this.dtor);
+  // set a timer to check on outstanding requests
+  this.time_wait = tm_wait || 10000;
 }
 
-// JSON serialization for a msg onto a socket
-Peer.prototype.send = function(msg) {
-  this.socket.write(JSON.stringify(msg));
+Peer.prototype.dtor = function() {
+  // Cleanup the socket
+  this.socket.destroy();
+  // Send timeout errors to any waiting clients
+  _(this.requests).each(function(value, key) {
+    value('Request timeout');
+  });
+  // Initiate the user supplied callback
+  this.destroy();
+};
+
+Peer.prototype.timer = function() {
+  // get the current time in milliseconds
+  var ct = new Date().getTime();
+  // invoke an error and delete any stale requests
+  _(this.requests).each(function(value, key) {
+    if(ct >= value.timeout) {
+      value.callback('Request timed out');
+      delete this.requests[key];
+    }
+  });
+};
+
+Peer.prototype.recv = function(data) {
+  try {
+    _(buffer.read(data)).each(function(msg) {
+      if(isResponse(msg)) {
+        this.rxResponse(msg);
+      } else if(isRequest(msg)) {
+        if(isNotification(msg)) {
+          this.rxNotification(msg);
+        } else {
+          this.rxRequest(msg);
+        }
+      } else {
+        throw ('Bad msg: '+msg);
+      }
+    });
+  } catch(e) {
+    console.log(e);
+    this.dtor();
+  }
+};
+
+Peer.prototype.rxRequest = function(msg) {
+  this.requestCB(msg);
+};
+
+Peer.prototype.rxNotification = function(msg) {
+  this.notifyCB(msg);
+};
+
+Peer.prototype.rxResponse = function(msg) {
+  if(_(this.requests).has(msg.id)) {
+    this.requests[msg.id].callback(msg.error, msg.result);
+    delete this.requests[msg.id];
+  } else {
+    console.log('unknown response');
+  }
 };
 
 Peer.prototype.request = function(method, params, cb) {
@@ -96,18 +131,19 @@ Peer.prototype.request = function(method, params, cb) {
   // Remember the request transaction
   this.requests[msg.id] = {
     msg: msg,
-    callback: cb
+    callback: cb,
+    timeout: (this.time_wait + new Date().getTime())
   };
   // Send the msg
-  this.send(msg);
+  send(this.socket, msg);
 };
 
 Peer.prototype.response = function(result, id, error) {
-  this.send(new Response(result, id, error));
+  send(this.socket, new Response(result, id, error));
 };
 
 Peer.prototype.notify = function(method, params) {
-  this.send(new Notify(method, params));
+  send(this.socket, new Notify(method, params));
 };
 
 exports.Peer = Peer;
