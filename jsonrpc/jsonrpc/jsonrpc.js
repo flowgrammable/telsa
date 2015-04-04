@@ -141,14 +141,19 @@ Peer.prototype.request = function(method, params, cb) {
   };
   // Send the msg
   send(this.socket, msg);
+  return msg;
 };
 
 Peer.prototype.response = function(result, id, error) {
-  send(this.socket, new Response(result, id, error));
+  var msg = new Response(result, id, error);
+  send(this.socket, msg);
+  return msg;
 };
 
 Peer.prototype.notify = function(method, params) {
-  send(this.socket, new Notify(method, params));
+  var msg = new Notify(method, params);
+  send(this.socket, msg);
+  return msg;
 };
 
 exports.Peer = Peer;
