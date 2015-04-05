@@ -14,6 +14,15 @@ function isInteger(val) {
   return _(val).isFinite();
 }
 
+function assertNumber(name, val) {
+  if(_(val).isUndefined()) {
+    throw (name + ' is undefined');
+  }
+  if(!_(val).isNumber()) {
+    throw (name+' not number: '+val);
+  }
+}
+
 function isNumber(val) {
   return _(val).isNumber();
 }
@@ -42,6 +51,28 @@ function assertString(name, str) {
 
 function isString(str) {
   return _(str).isString();
+}
+
+function assertId(name, id) {
+  assertString(name, id);
+  if(!/[a-zA-Z_][a-zA-Z_0-9]*/.test(id)) {
+    throw (name+' not identifier: '+id);
+  }
+}
+
+function isId(id) {
+  return isString(id) && !/[a-zA-Z_][a-zA-Z_0-9]*/.test(id);
+}
+
+function assertVersion(name, ver) {
+  assertString(name, ver);
+  if(!/[0-9]+\.[0-9]+\.[0-9]+/.test(ver)) {
+    throw (name+ 'not version: '+ver);
+  }
+}
+
+function isVersion(ver) {
+  return isString(ver) && /[0-9]+\.[0-9]+\.[0-9]+/.test(ver);
 }
 
 function assertObject(name, obj) {
@@ -139,13 +170,13 @@ exports.set = function() {
   } else if(array.length > 1 && 
             _(array).every(function(elem) {
               return isAtom(elem);
-            }) {
+            })) {
     set = array;
   } else {
     throw 'Set failure';
   }
   return ['set', set];
-}
+};
 
 function isSet(set) {
   return isAtom(set) || (
@@ -202,7 +233,7 @@ exports.map = function() {
   } else if(array.length > 1 && 
             _(array).every(function(elem) {
               return isPair(elem);
-            }) {
+            })) {
     set = array;
   } else {
     throw 'Map failure';
