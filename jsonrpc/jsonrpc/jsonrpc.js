@@ -9,7 +9,7 @@ function Request(method, params) {
   this.id     = uuid.v4(); 
 }
 
-function Respone(result, id, error) {
+function Response(result, id, error) {
   this.result = result;
   this.error  = error || null;
   this.id     = id;
@@ -26,17 +26,19 @@ function isRequest(msg) {
          !_(msg.params).isUndefined() && _(msg.params).isArray() &&
          !_(msg.id).isUndefined();
 }
+exports.isRequest = isRequest;
 
 function isNotification(msg) {
   // assumes its a request
   return msg.id === null;
 }
+exports.isNotification = isNotification;
 
 function isResponse(msg) {
-  return !_(msg.result).isUndefined() &&
-         !_(msg.error).isUndefined() &&
+  return !_(msg.error).isUndefined() &&
          !_(msg.id).isUndefined();
 }
+exports.isResponse = isResponse;
 
 // private serialization of json and send
 function send(socket, msg) {
@@ -106,7 +108,7 @@ Peer.prototype.recv = function(data) {
       } else {
         console.log('Bad msg: '+msg);
       }
-    });
+    }, this);
   } catch(e) {
     console.log(e);
     this.dtor();
