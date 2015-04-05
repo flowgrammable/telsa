@@ -1,10 +1,12 @@
 
+var prm = require('./primitives');
+
 /////////////////////////////// Operations ///////////////////////////////
 
 exports.insert = function(params) {
   // basic insert validation
   assertObject('insert.params', params);
-  assertString('table', params.table);
+  assertId('table', params.table);
   assertObject('row', params.row);
   // build the base object
   var insert = {
@@ -24,7 +26,7 @@ exports.insert = function(params) {
 exports.select = function(params) {
   // basic select validation
   assertObject('select.params', params);
-  assertString('table', params.table);
+  assertId('table', params.table);
   // build the base object
   var select = {
     op: "select",
@@ -48,7 +50,7 @@ exports.select = function(params) {
 exports.update = function(params) {
   // basic update validation
   assertObject('update.params', params);
-  assertString('table', params.table);
+  assertId('table', params.table);
   assertObject('row', params.row);
   // build the base object
   var update = {
@@ -69,7 +71,7 @@ exports.update = function(params) {
 exports.mutate = function(params) {
   // basic mutate validation
   assertObject('mutate.params', params);
-  assertString('table', params.table);
+  assertId('table', params.table);
   var mutate = {
     op:        "mutate",
     table:     params.table,
@@ -93,7 +95,7 @@ exports.mutate = function(params) {
 exports.del = function(params) {
   // basic mutate validation
   assertObject('delete.params', params);
-  assertString('table', params.table);
+  assertId('table', params.table);
   var del = {
     op:    "delete",
     table: params.table,
@@ -111,7 +113,7 @@ exports.del = function(params) {
 exports.wait = function(params) {
   // basic wait validation
   assertObject('wait.params', params);
-  assertString('table', params.table);
+  assertId('table', params.table);
   assertUntil('until', params.until);
   var wait = {
     op:      "wait",
@@ -181,16 +183,6 @@ exports.assert = function(params) {
     lock: params.lock
   };
 };
-
-select({
-  table: "Open_vSwitch",
-  where: [
-    equal("ovs_version", "1.0"),
-    includes(x, X),
-    excludes
-  ],
-  columns: ["bridges"]
-});
 
 //////////////////////// OVSDB Functions //////////////////////////
 

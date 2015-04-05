@@ -1,6 +1,25 @@
 
 var ops = require('./operations');
 
+// Valid set construction
+ops.set();
+ops.set(1);
+ops.set([1]);
+ops.set(1, 2, 3, 4);
+ops.set([1, 2, 3, 4);
+
+// Valid map construction
+ops.map();
+ops.map(
+  ops.pair(x, y),
+  ops.pair(x, y)
+);
+
+ops.map([
+  ops.pair(x, y),
+  ops.pair(x, y)]
+);
+
 // insert example
 ops.insert({
   table: "Open_vSwitch",
