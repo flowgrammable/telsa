@@ -132,7 +132,7 @@ Peer.prototype.rxResponse = function(msg) {
 
 Peer.prototype.request = function(method, params, cb) {
   // Construct the message
-  var msg = new Request(method, params, cb);
+  var msg = new Request(method, params);
   // Remember the request transaction
   this.requests[msg.id] = {
     msg: msg,

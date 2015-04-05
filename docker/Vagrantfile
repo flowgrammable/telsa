@@ -2,7 +2,6 @@
 # vi: set ft=ruby :
 $script_ovs = <<SCRIPT
 sudo apt-get install openvswitch-common openvswitch-switch -y
-sudo ovs-appctl -t ovsdb-server ovsdb-server/add-remote ptcp:4444
 SCRIPT
 
 $script_flowsim = <<SCRIPT
