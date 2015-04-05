@@ -1,5 +1,5 @@
 var expect = require('expect.js');
-var buff   = require('../jsonrpc/buffer.js');
+var buff   = require('../buffer.js');
 
 describe('Buffer Read', function(){
 
