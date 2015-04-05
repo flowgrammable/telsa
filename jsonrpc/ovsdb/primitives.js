@@ -1,4 +1,12 @@
 
+function getArray(args) {
+  var result = [];
+  for(var i=0; i<args.length; ++i) {
+    result.push(args[i]);
+  }
+  return result;
+}
+
 ///////////////////////////////// Type Assertions //////////////////////////////
 
 function assertInteger(name, val) {
@@ -9,10 +17,12 @@ function assertInteger(name, val) {
     throw (name+' not integer: '+val);
   }
 }
+exports.assertInteger = assertInteger;
 
 function isInteger(val) {
   return _(val).isFinite();
 }
+exports.isInteger = isInteger;
 
 function assertNumber(name, val) {
   if(_(val).isUndefined()) {
@@ -22,10 +32,12 @@ function assertNumber(name, val) {
     throw (name+' not number: '+val);
   }
 }
+exports.assertNumber = assertNumber;
 
 function isNumber(val) {
   return _(val).isNumber();
 }
+exports.isNumber = isNumber;
 
 function assertBoolean(name, val) {
   if(_(val).isUndefined()) {
@@ -35,10 +47,12 @@ function assertBoolean(name, val) {
     throw (name+' not boolean: '+val);
   }
 }
+exports.assertBoolean = assertBoolean;
 
 function isBoolean(val) {
   return _(val).isBoolean();
 }
+exports.isBoolean = isBoolean;
 
 function assertString(name, str) {
   if(_(str).isUndefined()) {
@@ -48,10 +62,12 @@ function assertString(name, str) {
     throw (name+' not a string: '+str);
   }
 }
+exports.assertString = assertString;
 
 function isString(str) {
   return _(str).isString();
 }
+exports.isString = isString;
 
 function assertId(name, id) {
   assertString(name, id);
@@ -59,10 +75,12 @@ function assertId(name, id) {
     throw (name+' not identifier: '+id);
   }
 }
+exports.assertId = assertId;
 
 function isId(id) {
   return isString(id) && !/[a-zA-Z_][a-zA-Z_0-9]*/.test(id);
 }
+exports.isId = isId;
 
 function assertVersion(name, ver) {
   assertString(name, ver);
@@ -70,10 +88,12 @@ function assertVersion(name, ver) {
     throw (name+ 'not version: '+ver);
   }
 }
+exports.assertVersion = assertVersion;
 
 function isVersion(ver) {
   return isString(ver) && /[0-9]+\.[0-9]+\.[0-9]+/.test(ver);
 }
+exports.isVersion = isVersion;
 
 function assertObject(name, obj) {
   if(_(obj).isUndefined()) {
@@ -83,10 +103,12 @@ function assertObject(name, obj) {
     throw (name+' not an object: '+obj);
   }
 }
+exports.assertObject = assertObject;
 
 function isObject(obj) {
   return _(obj).isObject();
 }
+exports.isObject = isObject;
 
 function assertArray(name, array) {
   if(_(array).isUndefined()) {
@@ -96,10 +118,12 @@ function assertArray(name, array) {
     throw (name+' not an array: '+array);
   }
 }
+exports.assertArray = assertArray;
 
 function isArray(array) {
   return _(array).isArray();
 }
+exports.isArray = isArray;
 
 function assertUntil(name, until) {
   assertString(name, until);
@@ -107,10 +131,12 @@ function assertUntil(name, until) {
     throw (name+'not an until: '+until);
   }
 }
+exports.assertUntil = assertUntil;
 
 function isUntil(until) {
   return until === '==' || until === '!=';
 }
+exports.isUntil = isUntil;
 
 function assertColumns(columns) {
   assertArray('columns', columns);
@@ -118,6 +144,7 @@ function assertColumns(columns) {
     assertString(column);
   });
 }
+exports.assertColumns = assertColumns;
 
 function isColumns(cols) {
   return _(cols).isArray() && 
@@ -125,32 +152,28 @@ function isColumns(cols) {
             return isString(col);
           });
 }
+exports.isColumns = isColumns;
 
 ///////////////////////////// Types ///////////////////////////////
 
 function isAtom(atom) {
   return _(atom).isString() || _(atom).isNumber() || _(atom).isBoolean();
 }
+exports.isAtom = isAtom;
 
 function assertAtom(atom) {
   if(!isAtom(atom)) {
     throw ('Not atom: '+atom);
   }
 }
+exports.assertAtom = assertAtom;
 
 function assertAtoms(atoms) {
   _(atoms).each(function(atom) {
     assertAtom(atom);
   });
 }
-
-function getArray(args) {
-  var result = [];
-  for(var i=0; i<args.length; ++i) {
-    result.push(args[i]);
-  }
-  return result;
-}
+exports.assertAtoms = assertAtoms;
 
 exports.set = function() {
   // Initialize the set and convert the arguments
@@ -186,12 +209,14 @@ function isSet(set) {
             })
           );
 }
+exports.isSet = isSet;
 
 function assertSet(set) {
   if(!isSet(set)) {
     throw ('Not set: '+set);
   }
 }
+exports.assertSet = assertSet;
 
 exports.pair = function(lhs, rhs) {
   assertAtom(lhs);
@@ -203,18 +228,21 @@ function isPair(pair) {
   return _(pair).isArray() && pair.length === 2 &&
          isAtom(pair[0]) && isAtom(pair[1]);
 }
+exports.isPair = isPair;
 
 function assertPair(pair) {
   if(!isPair(pair)) {
     throw ('Not pair: '+pair);
   }
 }
+exports.assertPair = assertPair;
 
 function assertPairs(pairs) {
   _(pairs).each(function(pair) {
     assertPair(pair);
   });
 }
+exports.assertPairs = assertPairs;
 
 exports.map = function() {
   var map = [];
@@ -249,20 +277,24 @@ function isMap(map) {
            return isPair(pair);
          });
 }
+exports.isMap = isMap;
 
 function assertMap(map) {
   if(!isMap(map)) {
     throw ('Not map: '+map);
   }
 }
+exports.assertMap = assertMap;
 
 function isValue(value) {
   return isAtom(value) || isSet(value) || isMap(value);
 }
+exports.isValue = isValue;
 
 function assertValue(value) {
   if(!isValue(value)) {
     throw ('Not value: '+value);
   }
 }
+exports.assertValue = assertValue;
 

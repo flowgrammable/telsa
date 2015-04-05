@@ -99,6 +99,7 @@ OVSDB.prototype.recvRequest = function(msg) {
 };
 
 OVSDB.prototype.recvNotify = function(msg) {
+  switch(msg.method) {
     case Methods.Cancel:
       this.rx_cancel(msg);
       break;
@@ -117,6 +118,7 @@ OVSDB.prototype.recvNotify = function(msg) {
     default:
       this.unknown_notify(msg);
       break;
+  }
 };
 
 OVSDB.prototype.destroy = function() {
