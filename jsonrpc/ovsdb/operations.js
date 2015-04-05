@@ -122,6 +122,38 @@ function isMap(map) {
          });
 }
 
+exports.pair = function(lhs, rhs) {
+  assertAtom(lhs);
+  assertAtom(rhs);
+  return [lhs, rhs];
+};
+
+exports.map = function() {
+  var map = [];
+  var array = getArray(arguments);
+  // empty set is legit
+  if(array.length === 0) {
+  } else if(array.length === 1) {
+    if(_(array[0]).isArray()) {
+      assertPairs(array[0]);
+      set = array[0];
+    } else if(isPair(array[0])) {
+      set.push(array[0]);
+    } else {
+      throw 'Bad arguments';
+    }
+  } else if(array.length > 1 && 
+            _(array).every(function(elem) {
+              return isPair(elem);
+            }) {
+    set = array;
+  } else {
+    throw 'Map failure';
+  }
+
+  return ['map', map];
+};
+
 function isValue(value) {
   return isAtom(value) || isSet(value) || isMap(value);
 }

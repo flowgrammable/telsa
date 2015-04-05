@@ -14,8 +14,7 @@ ops.insert({
 ops.select({
   table: "bridge",
   where: [
-    excludes("protocols", "OpenFlow14"),
-    includes("protocols", "OpenFlow15")
+    includes("protocols", ops.set("OpenFlow14", "OpenFlow15"))
   ],
   columns: [
     "name",
@@ -23,3 +22,5 @@ ops.select({
     "controllers"
   ]
 });
+
+
