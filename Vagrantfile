@@ -2,6 +2,7 @@
 # vi: set ft=ruby :
 $script_ovs = <<SCRIPT
 sudo apt-get install openvswitch-common openvswitch-switch -y
+sudo ovs-vsctl set-manager tcp:192.168.10.2:5060
 SCRIPT
 
 $script_flowsim = <<SCRIPT
