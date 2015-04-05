@@ -1,4 +1,6 @@
 
+///////////////////////////////// Type Assertions //////////////////////////////
+
 function assertInteger(name, val) {
   if(_(val).isUndefined()) {
     throw (name + ' is undefined');
@@ -57,6 +59,84 @@ function assertColumns(columns) {
     assertString(column);
   });
 }
+
+///////////////////////////// Types ///////////////////////////////
+
+function isAtom(atom) {
+  return _(atom).isString() || _(atom).isNumber() || _(atom).isBoolean();
+}
+
+function isSet(set) {
+  return isAtom(set) || (
+            _(set).isArray() && set.length === 2 && set[0] === 'set' &&
+            _(set[1]).isArray() && _(set[1]).every(function(elem) {
+              return isAtom(elem);
+            })
+          );
+}
+
+function getArray(args) {
+  var result = [];
+  for(var i=0; i<args.length; ++i) {
+    result.push(args[i]);
+  }
+  return result;
+}
+
+exports.set = function() {
+  // Initialize the set and convert the arguments
+  var set = [];
+  var array = getArray(arguments);
+  // empty set is legit
+  if(array.length === 0) {
+  } else if(array.length === 1) {
+    if(_(array[0]).isArray()) {
+      assertAtoms(array[0]);
+      set = array[0];
+    } else if(isAtom(array[0])) {
+      set.push(array[0]);
+    } else {
+      throw 'Bad arguments';
+    }
+  } else if(array.length > 1 && 
+            _(array).every(function(elem) {
+              return isAtom(elem);
+            }) {
+    set = array;
+  } else {
+    throw 'Set failure';
+  }
+  return ['set', set];
+}
+
+function isPair(pair) {
+  return _(pair).isArray() && pair.length === 2 &&
+         isAtom(pair[0]) && isAtom(pair[1]);
+}
+
+function isMap(map) {
+  return _(map).isArray() && map.length === 2 && map[0] === 'map' &&
+         _(map[1].isArray()) && _(map[1]).every(function(pair) {
+           // FIXME should also check pair types are same
+           return isPair(pair);
+         });
+}
+
+function isValue(value) {
+  return isAtom(value) || isSet(value) || isMap(value);
+}
+
+exports.set = function() {
+  var set = [];
+
+  if(arguments.length === 1) {
+  } else if(arguments.length > 1) {
+  }
+
+  return ['set', set];
+};
+
+/////////////////////////////// Operations ///////////////////////////////
 
 exports.insert = function(params) {
   // basic insert validation
