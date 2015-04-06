@@ -1,6 +1,6 @@
-
 var uuid = require('uuid');
 var _    = require('underscore');
+
 var buf  = require('./buffer');
 
 function Request(method, params) {
@@ -45,7 +45,7 @@ function send(socket, msg) {
   socket.write(JSON.stringify(msg));
 }
 
-function Peer(socket, reqCB, notCB, tm_wait, destroy) {
+function Peer(socket, reqCB, notCB, tm_wait, destroy, logger) {
   var that = this;
   // peer socket we're managing
   this.socket = socket;
@@ -69,6 +69,8 @@ function Peer(socket, reqCB, notCB, tm_wait, destroy) {
   });
   // set a timer to check on outstanding requests
   this.time_wait = tm_wait || 10000;
+  // set logger
+  this.log = logger; 
 }
 
 Peer.prototype.dtor = function() {
@@ -99,18 +101,20 @@ Peer.prototype.recv = function(data) {
     _(this.buffer.read(data)).each(function(msg) {
       if(isResponse(msg)) {
         this.rxResponse(msg);
+        this.log.info(msg);
       } else if(isRequest(msg)) {
         if(isNotification(msg)) {
           this.rxNotification(msg);
         } else {
           this.rxRequest(msg);
         }
+        this.log.info(msg);
       } else {
-        console.log('Bad msg: '+msg);
+        this.log.error('Bad msg: '+msg);
       }
     }, this);
   } catch(e) {
-    console.log(e);
+    this.log.error(e);
     this.dtor();
   }
 };
@@ -141,6 +145,8 @@ Peer.prototype.request = function(method, params, cb) {
     callback: cb,
     timeout: (this.time_wait + new Date().getTime())
   };
+  // log outgoing message
+  this.log.info(msg);
   // Send the msg
   send(this.socket, msg);
   return msg;

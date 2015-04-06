@@ -3,6 +3,8 @@
 var net = require('net');
 var  _ = require('underscore');
 var jrpc = require('./jsonrpc');
+var logg = require('./logger');
+var logger = new logg.Logger();
 
 function Server(sk) {
   var that = this;
@@ -15,7 +17,7 @@ function Server(sk) {
     }, 10000, 
     function() {
       that.destroy();
-    });
+    }, logger);
 
   this.timer = setInterval(function() {
     that.peer.request('echo', [], function(err, result) {
