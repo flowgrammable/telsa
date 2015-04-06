@@ -91,7 +91,7 @@ Peer.prototype.timer = function() {
       value.callback('Request timed out');
       delete this.requests[key];
     }
-  });
+  }, this);
 };
 
 Peer.prototype.recv = function(data) {
