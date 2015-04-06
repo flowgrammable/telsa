@@ -84,7 +84,8 @@ send request
       "name": "eth1",
       "interfaces": ["named-uuid","row0a171f11_2c23_43fc_b291_e2c85f764e94"]
     },
-    "table":"Port","uuid-name":"row806d7f6c_9a78_4c58_83ba_406b12f240ef",
+    "table":"Port",
+    "uuid-name": "row806d7f6c_9a78_4c58_83ba_406b12f240ef",
     "op": "insert"
   }, {
     "row": {
