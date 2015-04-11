@@ -1,0 +1,17 @@
+To run the server, do
+
+ cabal run
+
+Some http requests you can make against the server...
+
+You can get the list of switches like this (should return empty list on first time):
+ curl localhost:3000/switches
+
+You can add a switch by posting a switch object (in JSON format) to addswitch URL. The switch1.json and switch2.json files have two example switches inside:
+
+ curl -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d @switch1.json localhost:3000/addswitch
+ curl -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d @switch2.json localhost:3000/addswitch
+
+You can delete a switch by doing a DELETE HTTP request to the switch URL; I.e. to delete switch with ID 666, do:
+
+ curl -H "Accept: application/json" -H "Content-Type: application/json" -X DELETE localhost:3000/switch/666
