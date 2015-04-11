@@ -1,3 +1,5 @@
+* Running...
+
 To run the server, do
 
  cabal run
@@ -17,7 +19,24 @@ You can delete a switch by doing a DELETE HTTP request to the switch URL; I.e. t
  curl -H "Accept: application/json" -H "Content-Type: application/json" -X DELETE localhost:3000/switch/666
 
 
-Related Reading on the Web:
+
+* Tests
+
+I added a set of quickcheck tests for the code to show how they can be used. You can run them with
+
+ cabal test
+
+If that fails, you may be missing some of the libraries needed to run the tests. If so, run:
+
+ cabal install --only-dependencies --enable-tests
+
+Then try 'cabal test' again.
+
+You can see the tests in tests/test.hs. There is currently one property being tested. The property states that taking any Switch value and converting it to JSON and then back to Haskell Switch value yields the same value that you started with. Every time you run 'cabal test', the tester will generate some number (100 is the default I think) of random switch instances with which (using the random generator defined in Switch.hs) to test this property. For more info on randomized property-based testing, check out QuickCheck online.
+
+
+
+* Related Reading on the Web:
 
 + Stuff about Yesod, the Haskell web app framework I am using in this example:
 ++ http://www.yesodweb.com/book
@@ -28,3 +47,4 @@ Related Reading on the Web:
 ++ http://hackage.haskell.org/package/aeson-0.8.0.2/docs/Data-Aeson.html
 
 + https://www.haskell.org/hoogle/ , useful for searching public libraries by function, type, module, etc.
+

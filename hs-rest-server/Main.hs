@@ -5,9 +5,9 @@
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE ViewPatterns      #-}
 
-import Control.Applicative
+import Switch
+
 import Control.Concurrent.STM
-import Control.Monad
 import Yesod
 
 main :: IO ()
@@ -17,27 +17,6 @@ main = do
 
 -- holds the application state
 data App = App { switchesVar :: TVar [Switch] }
-
--- record representing a switch.
-data Switch = Switch { switchID   :: Int
-                     , switchName :: String
-                     }
-
--- The following defines how to convert between Haskell and JSON
--- representations of a Switch record.
-instance ToJSON Switch where
-    toJSON Switch {..} =
-      object
-      [ "switchID" .= switchID
-      , "switchName" .= switchName
-      ]
-
-instance FromJSON Switch where
-  parseJSON (Object v) =
-    Switch <$>
-    v .: "switchID" <*>
-    v .: "switchName"
-  parseJSON _ = mzero
 
 -- This declares the resources and the handlers
 -- the first one is the get for the switches URL
