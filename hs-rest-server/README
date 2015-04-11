@@ -15,3 +15,16 @@ You can add a switch by posting a switch object (in JSON format) to addswitch UR
 You can delete a switch by doing a DELETE HTTP request to the switch URL; I.e. to delete switch with ID 666, do:
 
  curl -H "Accept: application/json" -H "Content-Type: application/json" -X DELETE localhost:3000/switch/666
+
+
+Related Reading on the Web:
+
++ Stuff about Yesod, the Haskell web app framework I am using in this example:
+++ http://www.yesodweb.com/book
+++ http://www.yesodweb.com/book/restful-content
+
++ About Aeson, the JSON library in Haskell
+++ https://www.fpcomplete.com/school/starting-with-haskell/libraries-and-frameworks/text-manipulation/json
+++ http://hackage.haskell.org/package/aeson-0.8.0.2/docs/Data-Aeson.html
+
++ https://www.haskell.org/hoogle/ , useful for searching public libraries by function, type, module, etc.
