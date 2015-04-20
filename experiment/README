@@ -1,0 +1,25 @@
+Steps to get started after you vagrant up
+-----------------------------------------
+1. make sure docker is running
+``` sudo docker -H tcp://0.0.0.0:4243 -H unix:///var/run/docker.sock -d ```
+
+2. set redis to listen on 0.0.0.0. Open /etc/redis/redis.conf, 
+replace the line bind 127.0.0.1 with bind 0.0.0.0
+
+3. set redis to publish keyspace events
+``` sudo redis-cli config set notify-keyspace-events KEA ```
+
+4. pull the latest controller docker image from repo
+``` sudo docker pull flowgrammable/tinycontroller ```
+
+5. run npm install in folders: tinycontroller, manager, interface, client
+
+6. run bower install in folder: client
+
+Starting the service
+---------------------
+1. nodejs /vagrant/interface/server.js
+
+2. nodejs /vagrant/manager/manager.js
+
+3. cd /vagrant/client && grunt serve  (this can be run from host machine as well)

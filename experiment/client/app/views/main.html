@@ -1,0 +1,14 @@
+<div class="row marketing">
+  <form class="form-inline">
+    <div class="form-group">
+      <label class="sr-only">Name</label>
+      <input type="text" ng-model="name" placeholder="Switch Name">
+    </div>
+    <button type="submit" class="btn btn-default" ng-click="addSwitch()">Add Switch</button>
+    <button type="submit" class="btn btn-default" ng-click="grabSwitches()">Get Switches</button>
+  </form>
+  <div ng-show="ovses.length" ui-grid="{ data: ovses }" class="myGrid"></div>
+  <div class="row">
+    <h3>Debug</h3>
+    <pre>{{msg}}</pre>
+</div>
