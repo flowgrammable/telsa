@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 var redis = require('redis');
-
 var prog = require('commander');
 var _ = require('underscore');
 var Docker = require('dockerode');
@@ -103,10 +102,10 @@ Manager.prototype.startContainer = function(container, reqData){
           };
           that.redisClient.set('container:'+containerInfo.Id, JSON.stringify(containerInfo));
           that.redisClient.publish('container', JSON.stringify({ 
-		action: 'ready', 
-		orgId: containerInfo.orgId, 
-		id: containerInfo.id,
-		ip: containerInfo.ip}));
+		        action: 'ready', 
+		        orgId: containerInfo.orgId, 
+		        id: containerInfo.id,
+		        ip: containerInfo.ip}));
         }
       });
     }

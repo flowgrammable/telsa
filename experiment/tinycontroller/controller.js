@@ -38,12 +38,11 @@ var ctrlConfig = {
 function TinyController(conf){
   console.log('Configuration: ', conf);
   var that = this;
-  this.orgId= conf.orgId;
+  this.orgId = conf.orgId;
   this.name = conf.name; 
   this.switchIP = conf.switchIP; 
   this.switchPort = conf.switchPort;
   this.ip = ip;
-  console.log(this.ip);
   this.ovsdbServer = new net.createServer(function(sock){
     redisClient.set('ovs:'+that.orgId+':switch:'+that.name+':status', 'disconnected');
     that.ovsdb = new ovsdb.OVSDB(sock);
@@ -56,7 +55,6 @@ function TinyController(conf){
 }
 
 var tc = new TinyController(ctrlConfig);
-
 
 tc.ovsdbServer.listen(tc.switchPort);
 
